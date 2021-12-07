@@ -1,7 +1,7 @@
 from tkinter import *
 
 # -------------Set-Up my windows ----------#
-# ----Colors
+# ----Color
 BACKGROUND_COLOR = "#20574f"
 # ------Window
 root = Tk()
@@ -11,7 +11,6 @@ root.resizable(False, False)
 root.iconbitmap("img/my.ico")
 root.config(bg=BACKGROUND_COLOR)
 canvas = Canvas(width=600, height=350, bg=BACKGROUND_COLOR, highlightthickness=0)
-
 # -------------Natural Images--------#
 natural_img_1 = PhotoImage(file="img/n1.png")
 natural_img_2 = PhotoImage(file="img/n2.png")
