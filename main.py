@@ -1,32 +1,43 @@
 from tkinter import *
+from tkinter import ttk
 
 # -------------Set-Up my windows ----------#
 # ----Color  and Fonts --------#
 FONT = "Coiny"
 BACKGROUND_COLOR = "#20574f"
 FOREGROUND = "#62d9c7"
-# ------Window
+# ------Window----------#
 root = Tk()
 root.title("Image Viewer")
 root.geometry("+600+200")
 root.resizable(False, False)
-root.iconbitmap("img/my.ico")
+root.iconbitmap("img/app_img/my.ico")
 root.config(bg=BACKGROUND_COLOR)
-canvas = Canvas(width=600, height=350, bg=BACKGROUND_COLOR, highlightthickness=0)
+# ----------- Additional
+tabs = ttk.Notebook(root)
+natural_frame = Frame(root, bg=BACKGROUND_COLOR)
+animals_frame = Frame(root, bg=BACKGROUND_COLOR)
+tabs.add(natural_frame, text="Natural Images")
+tabs.add(animals_frame, text="Animals Images")
+canvas = Canvas(natural_frame, width=600, height=350, bg=BACKGROUND_COLOR, highlightthickness=0)
+
 # -------------Natural Images--------#
-natural_img_1 = PhotoImage(file="img/n1.png")
-natural_img_2 = PhotoImage(file="img/n2.png")
-natural_img_3 = PhotoImage(file="img/n3.png")
-natural_img_4 = PhotoImage(file="img/n4.png")
-natural_img_5 = PhotoImage(file="img/n5.png")
-natural_img_6 = PhotoImage(file="img/n6.png")
-natural_img_7 = PhotoImage(file="img/n7.png")
+natural_img_1 = PhotoImage(file="img/neutral_img/n1.png")
+natural_img_2 = PhotoImage(file="img/neutral_img/n2.png")
+natural_img_3 = PhotoImage(file="img/neutral_img/n3.png")
+natural_img_4 = PhotoImage(file="img/neutral_img/n4.png")
+natural_img_5 = PhotoImage(file="img/neutral_img/n5.png")
+natural_img_6 = PhotoImage(file="img/neutral_img/n6.png")
+natural_img_7 = PhotoImage(file="img/neutral_img/n7.png")
 
 images_list = [natural_img_1, natural_img_2, natural_img_3, natural_img_4, natural_img_5, natural_img_6, natural_img_7]
+
+# ---------------Animals Images----------------#
+
 # ---------------Buttons Images----------------#
-forward_img = PhotoImage(file="img/fast-forwardr.png")
-backward_img = PhotoImage(file="img/fast-backwardr.png")
-exit_img = PhotoImage(file="img/exitr.png")
+forward_img = PhotoImage(file="img/app_img/fast-forwardr.png")
+backward_img = PhotoImage(file="img/app_img/fast-backwardr.png")
+exit_img = PhotoImage(file="img/app_img/exitr.png")
 # ---------------Image viewer Function----------#
 # Counter
 index_count = 0
@@ -62,12 +73,12 @@ def go_backward():
 # --------------Widgets--------------#
 
 view_image = canvas.create_image(300, 175, image=images_list[index_count])
-forward_b = Button(image=forward_img, bg=BACKGROUND_COLOR, activebackground=BACKGROUND_COLOR, border=0,
+forward_b = Button(natural_frame, image=forward_img, bg=BACKGROUND_COLOR, activebackground=BACKGROUND_COLOR, border=0,
                    command=go_forward)
-backward_b = Button(image=backward_img, bg=BACKGROUND_COLOR, activebackground=BACKGROUND_COLOR, border=0,
+backward_b = Button(natural_frame, image=backward_img, bg=BACKGROUND_COLOR, activebackground=BACKGROUND_COLOR, border=0,
                     command=go_backward)
-exit_b = Button(image=exit_img, bg=BACKGROUND_COLOR, activebackground=BACKGROUND_COLOR, border=0, command=root.quit)
-status_bar = Label(text=f"Image 1 of {len(images_list)}", bd=2, relief=SUNKEN, bg=BACKGROUND_COLOR, fg=FOREGROUND,
+exit_b = Button(natural_frame, image=exit_img, bg=BACKGROUND_COLOR, activebackground=BACKGROUND_COLOR, border=0, command=root.quit)
+status_bar = Label(natural_frame, text=f"Image 1 of {len(images_list)}", bd=2, relief=SUNKEN, bg=BACKGROUND_COLOR, fg=FOREGROUND,
                    font=(FONT, 15), pady=5)
 
 # --------Grid widgets positions---------#
@@ -77,5 +88,6 @@ backward_b.grid(column=0, row=1, pady=10, sticky=E)
 forward_b.grid(column=2, row=1, pady=10, sticky=W)
 exit_b.grid(column=1, row=1)
 status_bar.grid(column=0, row=2, columnspan=3, sticky=W + E)
+tabs.pack(expand=True, fill="both")
 
 root.mainloop()
