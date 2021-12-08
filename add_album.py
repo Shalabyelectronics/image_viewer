@@ -1,5 +1,4 @@
 from tkinter import *
-from tkinter import ttk
 
 # ----Color  and Fonts --------#
 FONT = "Coiny"
@@ -8,7 +7,7 @@ FOREGROUND = "#62d9c7"
 
 
 class Add_album:
-    def __init__(self, album_name, photos_list):
+    def __init__(self, root, album_name, photos_list):
         self.album_name = album_name
         self.photos_list = photos_list
         self.img_objects_list = []
@@ -21,6 +20,7 @@ class Add_album:
         self.view_image = None
         self.status_bar = None
         self.canvas = None
+        self.root = root
 
     def add_photos_list(self):
         if type(self.photos_list) == list:
@@ -35,7 +35,8 @@ class Add_album:
                            border=0, command=self.forward)
         backward_b = Button(frame, image=self.backward_img, bg=BACKGROUND_COLOR, activebackground=BACKGROUND_COLOR,
                             border=0, command=self.backward)
-        exit_b = Button(frame, image=self.exit_img, bg=BACKGROUND_COLOR, activebackground=BACKGROUND_COLOR, border=0)
+        exit_b = Button(frame, image=self.exit_img, bg=BACKGROUND_COLOR, activebackground=BACKGROUND_COLOR, border=0,
+                        command=self.root.quit)
         self.status_bar = Label(frame, text=f"Image 1 of {len(self.img_objects_list)}", bd=2, relief=SUNKEN,
                                 bg=BACKGROUND_COLOR, fg=FOREGROUND,
                                 font=(FONT, 15), pady=5)

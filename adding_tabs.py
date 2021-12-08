@@ -1,4 +1,5 @@
 from add_album import *
+from tkinter import ttk
 
 FONT = "Coiny"
 BACKGROUND_COLOR = "#20574f"
@@ -16,7 +17,7 @@ animals = Frame(root, bg=BACKGROUND_COLOR)
 tab.add(neutral, text="Neutral")
 tab.add(animals, text="Animals")
 
-neutral_album = Add_album(album_name="Neutral", photos_list=[
+neutral_album = Add_album(root=root, album_name="Neutral", photos_list=[
     "img/neutral_img/n1.png",
     "img/neutral_img/n2.png",
     "img/neutral_img/n3.png",
@@ -26,7 +27,7 @@ neutral_album = Add_album(album_name="Neutral", photos_list=[
     "img/neutral_img/n7.png"])
 neutral_album.create_album_frame(neutral, background_color=BACKGROUND_COLOR)
 
-animals_album = Add_album(album_name="Animals", photos_list=[
+animals_album = Add_album(root=root, album_name="Animals", photos_list=[
     "img/animals_img/a_1.png",
     "img/animals_img/a_2.png",
     "img/animals_img/a_3.png",
