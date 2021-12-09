@@ -19,9 +19,12 @@ class Add_album:
         self.exit_img = PhotoImage(file="img/app_img/exitr.png")
         self.auto_img = PhotoImage(file="img/app_img/auto_play.png")
         self.add_img = PhotoImage(file="img/app_img/plus.png")
+        self.exit_sub_w_img = PhotoImage(file="img/app_img/exit_w.png")
+        self.save_album_img = PhotoImage(file="img/app_img/save.png")
         self.view_image = None
         self.status_bar = None
         self.canvas = None
+        self.add_album_window = None
         self.root = root
 
     def add_photos_list(self):
@@ -74,11 +77,25 @@ class Add_album:
             self.canvas.itemconfig(self.view_image, image=self.img_objects_list[self.index_count])
 
     def open_add_album(self):
-        add_album_window = Toplevel(bg=BACKGROUND_COLOR, bd=5, relief="groove")
-        add_album_window.geometry("+800+300")
-        add_album_window.minsize(width=300, height=300)
-        add_album_window.resizable(False, False)
-        add_album_window.iconbitmap("img/app_img/my.ico")
-        add_album_window.title("Add a new album")
-        test = Label(add_album_window, text="Welcom")
-        test.grid(column=0, row=0)
+        self.add_album_window = Toplevel(bg=BACKGROUND_COLOR, bd=5, relief="groove")
+        self.add_album_window.geometry("+800+300")
+        self.add_album_window.minsize(width=300, height=300)
+        self.add_album_window.resizable(False, False)
+        self.add_album_window.iconbitmap("img/app_img/my.ico")
+        self.add_album_window.title("Add a new album")
+        main_label = Label(self.add_album_window, text="Here you can add a new album.", font=(FONT, 15),
+                           bg=BACKGROUND_COLOR, fg="white")
+        album_name_l = Label(self.add_album_window, text="Album name   :", font=(FONT, 12), bg=BACKGROUND_COLOR,
+                             fg="white")
+        album_folder_l = Label(self.add_album_window, text="Album folder :", font=(FONT, 12), bg=BACKGROUND_COLOR,
+                               fg="white")
+        exit_sub_w_b = Button(self.add_album_window, image=self.exit_sub_w_img, bg=BACKGROUND_COLOR,
+                              activebackground=BACKGROUND_COLOR, border=0, command=self.add_album_window.destroy)
+        save_album_b = Button(self.add_album_window, image=self.save_album_img, bg=BACKGROUND_COLOR,
+                              activebackground=BACKGROUND_COLOR, border=0)
+
+        main_label.grid(column=0, row=0, columnspan=3, pady=10)
+        album_name_l.grid(column=0, row=1, pady=10, padx=5, sticky=W)
+        album_folder_l.grid(column=0, row=2, pady=10, padx=5, sticky=W)
+        exit_sub_w_b.grid(column=2, row=3, pady=20)
+        save_album_b.grid(column=0, row=3, pady=20)
