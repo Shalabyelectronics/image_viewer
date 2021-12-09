@@ -1,5 +1,6 @@
 from tkinter import *
 from tkinter import ttk
+from tkinter import filedialog
 
 # -------------Set-Up my windows ----------#
 # ----Color  and Fonts --------#
@@ -20,7 +21,7 @@ animals_frame = Frame(root, bg=BACKGROUND_COLOR)
 tabs.add(natural_frame, text="Natural Images")
 tabs.add(animals_frame, text="Animals Images")
 canvas = Canvas(natural_frame, width=600, height=350, bg=BACKGROUND_COLOR, highlightthickness=0)
-
+root.filename = filedialog.askopenfile()
 # -------------Natural Images--------#
 natural_img_1 = PhotoImage(file="img/neutral_img/n1.png")
 natural_img_2 = PhotoImage(file="img/neutral_img/n2.png")
