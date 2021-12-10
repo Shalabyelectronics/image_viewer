@@ -12,6 +12,14 @@ FOREGROUND = "#62d9c7"
 class PhotoAlbum(Tk):
     def __init__(self):
         super().__init__()
+        self.numbers_of_images = None
+        self.album_folder_b = None
+        self.album_name_e = None
+        self.save_album_b = None
+        self.exit_sub_w_b = None
+        self.album_folder_l = None
+        self.album_name_l = None
+        self.main_label = None
         self.add_window = None
         self.current_dir = None
         self.title("Image Viewer")
@@ -44,7 +52,8 @@ class PhotoAlbum(Tk):
                              command=self.quit)
         self.auto_b = Button(self, image=self.auto_img, bg=BACKGROUND_COLOR, activebackground=BACKGROUND_COLOR,
                              border=0)
-        self.add_b = Button(self, image=self.add_img, bg=BACKGROUND_COLOR, activebackground=BACKGROUND_COLOR, border=0)
+        self.add_b = Button(self, image=self.add_img, bg=BACKGROUND_COLOR, activebackground=BACKGROUND_COLOR, border=0,
+                            command=self.open_add_window)
         self.status_bar = Label(self, text=f"Image 1 of Test", bd=2, relief=SUNKEN,
                                 bg=BACKGROUND_COLOR, fg=FOREGROUND, font=(FONT, 15), pady=5)
 
@@ -82,8 +91,43 @@ class PhotoAlbum(Tk):
             self.canvas.itemconfig(self.view_image, image=self.photos_list[self.index_count])
 
     def open_add_window(self):
+        # ------ Locate the current directory
         self.current_dir = os.getcwd()
+        # -------Create Add Window
+        # --Window canvas
         self.add_window = Toplevel(bg=BACKGROUND_COLOR, bd=5, relief="groove")
+        self.add_window.wm_attributes('-topmost', 1)
+        self.add_window.geometry("+800+300")
+        self.add_window.minsize(width=300, height=300)
+        self.add_window.resizable(False, False)
+        self.add_window.iconbitmap("img/app_img/my.ico")
+        self.add_window.title("Add a new album")
+        # --Window widgets
+        self.main_label = Label(self.add_window, text="Here you can add a new album.", font=(FONT, 15),
+                                bg=BACKGROUND_COLOR, fg="white")
+        self.album_name_l = Label(self.add_window, text="Album name   :", font=(FONT, 12), bg=BACKGROUND_COLOR,
+                                  fg="white")
+        self.album_folder_l = Label(self.add_window, text="Album folder :", font=(FONT, 12), bg=BACKGROUND_COLOR,
+                                    fg="white")
+        self.exit_sub_w_b = Button(self.add_window, image=self.exit_sub_w_img, bg=BACKGROUND_COLOR,
+                                   activebackground=BACKGROUND_COLOR, border=0, command=self.add_window.destroy)
+        self.save_album_b = Button(self.add_window, image=self.save_album_img, bg=BACKGROUND_COLOR,
+                                   activebackground=BACKGROUND_COLOR, border=0)
+        self.album_name_e = Entry(self.add_window, width=15, bg=BACKGROUND_COLOR, fg="white", font=(FONT, 12))
+        self.album_name_e.focus()
+        self.album_folder_b = Button(self.add_window, text="Select the folder.", font=(FONT, 12), bg=BACKGROUND_COLOR,
+                                     fg="white", activebackground=ACTIVE_BACKGROUND)
+        self.numbers_of_images = Label(self.add_window, text="Numbers of images.", font=(FONT, 12),
+                                       background=BACKGROUND_COLOR, fg="white")
+        # --Widgets grid
+        self.main_label.grid(column=0, row=0, columnspan=3, pady=10)
+        self.album_name_l.grid(column=0, row=1, pady=10, padx=5, sticky=W)
+        self.album_folder_l.grid(column=0, row=2, pady=10, padx=5, sticky=W)
+        self.exit_sub_w_b.grid(column=1, row=4, pady=30)
+        self.save_album_b.grid(column=0, row=4, pady=30, sticky=E)
+        self.album_name_e.grid(column=1, row=1, pady=10, padx=5)
+        self.album_folder_b.grid(column=1, row=2, pady=10, padx=5)
+        self.numbers_of_images.grid(column=0, row=3, columnspan=3, sticky=E + W)
 
 
 test = PhotoAlbum()
