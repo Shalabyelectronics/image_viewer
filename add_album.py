@@ -10,20 +10,15 @@ ACTIVE_BACKGROUND = "#b7ffef"
 FOREGROUND = "#62d9c7"
 
 
-class Add_album:
+class AddAlbum(Tk):
     def __init__(self):
+        super().__init__()
         # ---When the code start it will create a window
-        self.root = Tk()
-        self.root.title("Image Viewer")
-        self.root.geometry("+600+200")
-        self.root.resizable(False, False)
-        self.root.iconbitmap("img/app_img/my.ico")
-        self.root.config(bg=BACKGROUND_COLOR)
         # ---Until here we created the root window
         # --- Create a tab
-        self.tab = ttk.Notebook(self.root)
+        self.tab = None
         # --- create a frame
-        self.frame = Frame(self.root, bg=BACKGROUND_COLOR)
+        self.frame = None
         # --- objects images list
         self.img_objects_list = []
         # --- The name of the frame and the tab
@@ -32,6 +27,7 @@ class Add_album:
         self.index_count = 0
         self.status_number = 1
         # ----Application widgets images
+        self.default_img = PhotoImage(file="img/app_img/defualt_img.png")
         self.forward_img = PhotoImage(file="img/app_img/fast-forwardr.png")
         self.backward_img = PhotoImage(file="img/app_img/fast-backwardr.png")
         self.exit_img = PhotoImage(file="img/app_img/exitr.png")
@@ -53,13 +49,19 @@ class Add_album:
         self.image_file = None
         # --- it will take the length of the self.img_objects_list to update it to add images window
         self.numbers_of_images = None
-        self.tab.pack(expand=True, fill="both")
-        self.open_add_album()
-        self.root.mainloop()
+        self.mainloop()
 
-    def create_album_frame(self, frame, background_color):
-        self.canvas = Canvas(frame, width=600, height=350, bg=background_color, highlightthickness=0)
+    def create_album_win(self):
+        self.title("Image Viewer")
+        self.geometry("+600+200")
+        self.resizable(False, False)
+        self.iconbitmap("img/app_img/my.ico")
+        self.config(bg=BACKGROUND_COLOR)
+        self.img_objects_list.append(self.default_img)
+        self.create_album_frame(self.TK)
 
+    def create_album_frame(self, frame):
+        self.canvas = Canvas(frame, width=600, height=350, bg=BACKGROUND_COLOR, highlightthickness=0)
         self.view_image = self.canvas.create_image(300, 175, image=self.img_objects_list[self.index_count])
         forward_b = Button(frame, image=self.forward_img, bg=BACKGROUND_COLOR, activebackground=BACKGROUND_COLOR,
                            border=0, command=self.forward)
@@ -91,7 +93,7 @@ class Add_album:
             self.status_bar.config(text=f"Image {self.status_number} of {len(self.img_objects_list)}")
             self.canvas.itemconfig(self.view_image, image=self.img_objects_list[self.index_count])
         else:
-            self.index_count = len(self.img_objects_list) -1
+            self.index_count = len(self.img_objects_list) - 1
             self.status_number = len(self.img_objects_list)
 
     def backward(self):
@@ -113,8 +115,12 @@ class Add_album:
         self.numbers_of_images.config(text=str(len(self.img_objects_list)))
 
     def save_create_album(self):
+        self.img_objects_list.pop()
+        self.tab = ttk.Notebook(self.root)
+        self.frame = Frame(self.root, bg=BACKGROUND_COLOR)
         self.tab.add(self.frame, text=self.album_name_e.get())
-        self.create_album_frame(self.frame, BACKGROUND_COLOR)
+        self.create_album_frame(self.frame)
+        self.tab.pack(expand=True, fill="both")
         self.add_album_window.destroy()
 
     def open_add_album(self):
