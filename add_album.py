@@ -115,7 +115,6 @@ class AddAlbum(Tk):
         self.numbers_of_images.config(text=str(len(self.img_objects_list)))
 
     def save_create_album(self):
-        self.img_objects_list.pop()
         self.tab = ttk.Notebook(self.root)
         self.frame = Frame(self.root, bg=BACKGROUND_COLOR)
         self.tab.add(self.frame, text=self.album_name_e.get())
