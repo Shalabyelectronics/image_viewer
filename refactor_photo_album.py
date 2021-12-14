@@ -11,9 +11,10 @@ FOREGROUND = "#62d9c7"
 
 
 # -----Photo Album Class inherited from Tk class
-class PhotoAlbum(Tk):
-    def __init__(self):
+class PhotoAlbum(Frame):
+    def __init__(self, root_window):
         super().__init__()
+        self.new_album_frame = None
         self.tab = None
         self.image_path = None
         self.numbers_of_images = None
@@ -26,10 +27,6 @@ class PhotoAlbum(Tk):
         self.main_label = None
         self.add_window = None
         self.current_dir = None
-        self.title("Image Viewer")
-        self.geometry("+600+200")
-        self.resizable(False, False)
-        self.iconbitmap("img/app_img/my.ico")
         self.config(bg=BACKGROUND_COLOR, bd=5, relief="ridge")
         self.canvas = Canvas(self, width=600, height=350, bg="white", highlightthickness=0)
         self.photos_list = []
@@ -71,7 +68,6 @@ class PhotoAlbum(Tk):
         self.add_b.grid(column=3, row=1, sticky=W)
         self.status_bar.grid(column=0, row=2, columnspan=5, sticky=W + E)
 
-        self.mainloop()
 
     def go_next(self):
         print("next Working")
@@ -150,5 +146,10 @@ class PhotoAlbum(Tk):
         self.add_window.destroy()
 
 
-
-test = PhotoAlbum()
+window = Tk()
+window.title("Image Viewer")
+window.geometry("+600+200")
+window.resizable(False, False)
+window.iconbitmap("img/app_img/my.ico")
+test_frame = PhotoImage(window)
+test = PhotoAlbum(window)

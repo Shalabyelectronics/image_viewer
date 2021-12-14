@@ -10,15 +10,9 @@ ACTIVE_BACKGROUND = "#b7ffef"
 FOREGROUND = "#62d9c7"
 
 
-class AddAlbum(Tk):
-    def __init__(self):
+class AddAlbum(Frame):
+    def __init__(self, root_window):
         super().__init__()
-        # ---When the code start it will create a window
-        # ---Until here we created the root window
-        # --- Create a tab
-        self.tab = None
-        # --- create a frame
-        self.frame = None
         # --- objects images list
         self.img_objects_list = []
         # --- The name of the frame and the tab
@@ -34,7 +28,7 @@ class AddAlbum(Tk):
         self.auto_img = PhotoImage(file="img/app_img/auto_play.png")
         self.add_img = PhotoImage(file="img/app_img/plus.png")
         self.exit_sub_w_img = PhotoImage(file="img/app_img/exit_w.png")
-        self.save_album_img = PhotoImage(file="img/app_img/save.png")
+        self.save_album_sub_w_img = PhotoImage(file="img/app_img/save.png")
         # ---Create Canvas object from create_album_frame
         self.canvas = None
         # --- save Canvas object to view image
@@ -49,13 +43,9 @@ class AddAlbum(Tk):
         self.image_file = None
         # --- it will take the length of the self.img_objects_list to update it to add images window
         self.numbers_of_images = None
-        self.mainloop()
 
     def create_album_win(self):
-        self.title("Image Viewer")
-        self.geometry("+600+200")
-        self.resizable(False, False)
-        self.iconbitmap("img/app_img/my.ico")
+
         self.config(bg=BACKGROUND_COLOR)
         self.img_objects_list.append(self.default_img)
         self.create_album_frame(self.TK)
@@ -155,3 +145,13 @@ class AddAlbum(Tk):
         self.numbers_of_images.grid(column=0, row=3, columnspan=3, sticky=E + W)
         exit_sub_w_b.grid(column=1, row=4, pady=30)
         save_album_b.grid(column=0, row=4, pady=30, sticky=E)
+
+
+window = Tk()
+window.title("Image Viewer")
+window.geometry("+600+200")
+window.resizable(False, False)
+window.iconbitmap("img/app_img/my.ico")
+
+window.mainloop()
+
