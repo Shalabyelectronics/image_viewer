@@ -126,6 +126,7 @@ class AddPhoto(Toplevel):
             self.photo_path = list(filedialog.askopenfilenames(initialdir=self.current_dir, title="Select an image",
                                                                filetypes=(
                                                                ("png files", "*.png"), ("all files", "*.*"))))
+            self.numbers_of_images.config(text=f"{len(self.photo_path)}")
             try:
                 os.mkdir(f"img/albums/{self.album_name_e.get()}")
             except FileExistsError:
