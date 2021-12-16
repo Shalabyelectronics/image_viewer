@@ -1,9 +1,10 @@
-from tkinter import *
-import os, json
+import json
+import os
 import shutil
-from tkinter import ttk
-from tkinter import messagebox
+from tkinter import *
 from tkinter import filedialog
+from tkinter import messagebox
+from tkinter import ttk
 
 # ----Color  and Fonts --------#
 FONT = "Coiny"
@@ -12,8 +13,21 @@ ACTIVE_BACKGROUND = "#b7ffef"
 FOREGROUND = "#62d9c7"
 
 
+def create_data_file(data):
+    with open("data.json", "w") as data_file:
+        json.dump(data, data_file, indent=4)
+
+
+def update_data_file(new_data):
+    with open("data.json", "r") as data_file:
+        data = json.load(data_file)
+        data.update(new_data)
+    with open("data.json", "w") as data_file:
+        json.dump(data, data_file, indent=4)
+
+
 class AddPhoto(Toplevel):
-    def __init__(self):
+    def __init__(self, root_window, tab_note):
         super().__init__()
         self.update_album = None
         self.album_folders = None
@@ -23,6 +37,8 @@ class AddPhoto(Toplevel):
         self.album_data = None
         self.existed_album = None
         self.album_name = None
+        self.tab = tab_note
+        self.root_window = root_window
         self.photos_paths_list = []
         self.exit_img = PhotoImage(file="img/app_img/exit_w.png")
         self.save_img = PhotoImage(file="img/app_img/save.png")
@@ -102,7 +118,7 @@ class AddPhoto(Toplevel):
             self.photo_path = list(filedialog.askopenfilenames(initialdir=self.current_dir, title="Select an image",
                                                                filetypes=(
                                                                    ("png files", "*.png"), ("all files", "*.*"))))
-            self.update_album = f"img//albums//{self.album_name_e.get()}"
+            self.update_album = f"img/albums/{self.album_name_e.get()}"
 
         elif len(self.album_name_e.get()) > 0 and self.album_name_e.get() not in self.album_folders:
             self.album_name = self.album_name_e.get()
@@ -111,7 +127,7 @@ class AddPhoto(Toplevel):
                                                                filetypes=(
                                                                    ("png files", "*.png"), ("all files", "*.*"))))
             os.mkdir(f"img/albums/{self.album_name_e.get()}")
-            self.new_album_folder = f"img//albums//{self.album_name_e.get()}"
+            self.new_album_folder = f"img/albums/{self.album_name_e.get()}"
         else:
             self.wm_attributes('-topmost', 0)
             info = messagebox.showinfo(title="Required", message="Please, do not leave album name empty.")
@@ -120,14 +136,14 @@ class AddPhoto(Toplevel):
 
     def save(self):
 
-        if self.new_album_folder is not None :
+        if self.new_album_folder is not None:
             self.save_update(self.new_album_folder)
         elif self.update_album is not None:
             self.save_update(self.update_album)
         else:
             self.wm_attributes('-topmost', 0)
             info = messagebox.showinfo(title="Album not Created", message=f"Please try again.")
-            self.album_name_e.delete(0,END)
+            self.album_name_e.delete(0, END)
             if info == "ok":
                 self.wm_attributes('-topmost', 1)
 
@@ -145,29 +161,26 @@ class AddPhoto(Toplevel):
                     "photos list": self.photos_paths_list}
             }
             if os.path.isfile("data.json"):
-                self.update_data_file(data)
+                update_data_file(data)
             else:
-                self.create_data_file(data)
+                create_data_file(data)
+
+            new_frame = AlbumFrame(self.root_window, album_name=album, tab_note=self.tab)
+            new_frame.photos_list = [PhotoImage(file=image) for image in self.photos_paths_list]
+            new_frame.canvas.itemconfig(new_frame.view_image, image=new_frame.photos_list[0])
+            new_frame.status_bar.config(text=f"Image {new_frame.status_number} of {len(new_frame.photos_list)}")
+            new_frame.grid(column=0, row=0, columnspan=5)
+            self.tab.add(new_frame, text=album)
+            self.tab.grid(column=0, row=0)
             self.destroy()
-
-    def create_data_file(self, data):
-        with open("data.json", "w") as data_file:
-            json.dump(data, data_file, indent=4)
-
-    def update_data_file(self, new_data):
-        with open("data.json", "r") as data_file:
-            data = json.load(data_file)
-            data.update(new_data)
-        with open("data.json", "w") as data_file:
-            json.dump(data, data_file, indent=4)
-
-
 
 
 class AlbumFrame(Frame):
-    def __init__(self, root_window):
+    def __init__(self, root_window, album_name, tab_note):
         super().__init__()
         self.root_window = root_window
+        self.album_name = album_name
+        self.tab_note = tab_note
         # ----Frame name
         # ----Widgets images objects.
         self.forward_img = PhotoImage(file="img/app_img/fast-forwardr.png")
@@ -199,10 +212,10 @@ class AlbumFrame(Frame):
         # ---activate auto photo switch.
         self.delete_album_b = Button(self, image=self.delete_album_img, bg=BACKGROUND_COLOR,
                                      activebackground=BACKGROUND_COLOR,
-                                     border=0)
+                                     border=0, command=self.delete_album)
         # ---add a new album or add photo in an existed  album
         self.add_b = Button(self, image=self.add_img, bg=BACKGROUND_COLOR, activebackground=BACKGROUND_COLOR, border=0,
-                            command=AddPhoto)
+                            command=lambda: AddPhoto(self.root_window, self.tab_note))
         # ---Status bar where show the total photos and the current photo number.
         self.status_bar = Label(self, text="You are in default mode.", bd=2, relief=SUNKEN,
                                 bg=BACKGROUND_COLOR, fg=FOREGROUND, font=(FONT, 15), pady=5)
@@ -237,8 +250,6 @@ class AlbumFrame(Frame):
             else:
                 self.index_count = len(self.photos_list) - 1
                 self.status_number = len(self.photos_list)
-        else:
-            self.photos_list.append(self.default_image)
 
     # ---- Go back to switch to the previous photo.
     def go_back(self):
@@ -252,26 +263,53 @@ class AlbumFrame(Frame):
             else:
                 self.status_bar.config(text=f"Image {self.status_number} of {len(self.photos_list)}")
                 self.canvas.itemconfig(self.view_image, image=self.photos_list[self.index_count])
+
+    def delete_album(self):
+        confirmation = messagebox.askyesno(title="Deletion Conformation", message=f"Are you sure that you want to "
+                                                                                  f"delete {self.album_name} album?")
+        print(confirmation, self.album_name, os.listdir("img/albums"))
+        if confirmation and len(os.listdir("img/albums")) > 1:
+            shutil.rmtree(f"img/albums/{self.album_name}")
+            with open("data.json", "r") as data_file:
+                data = json.load(data_file)
+                del data[self.album_name]
+                data.update(data)
+            with open("data.json", "w") as data_file:
+                json.dump(data, data_file, indent=4)
+            self.destroy()
         else:
-            self.photos_list.append(self.default_image)
+            messagebox.showinfo(title="Attention!!!", message="You can't delete all albums you need to keep at least "
+                                                              "one album.")
+
+        # -----Test
 
 
-# -----Test
 root = Tk()
 root.geometry("+800+200")
-data_file = "data.json"
+root.iconbitmap(default="img/app_img/my.ico")
+root.title("Photo Album App")
 tab = ttk.Notebook()
-if os.path.isfile(data_file):
-    with open("data.json", "r") as data:
-        data = json.load(data)
-        for album in data:
-            new_frame = AlbumFrame(root_window=root)
-            new_frame.photos_list = data[album]["photos list"]
-            tab.add(new_frame, text=album)
-            new_frame.grid(column=0, row=0, columnspan=5)
-            tab.grid(column=0, row=0)
-else:
-    default_frame = AlbumFrame(root)
-    default_frame.grid(column=0, row=0, columnspan=5)
+
+
+def load_album():
+    if os.path.isfile("data.json"):
+        with open("data.json", "r") as data:
+            data = json.load(data)
+            for album in data:
+                new_frame = AlbumFrame(root, album, tab_note=tab)
+                new_frame.photos_list = [PhotoImage(file=image) for image in data[album]["photos list"]]
+                new_frame.canvas.itemconfig(new_frame.view_image, image=new_frame.photos_list[0])
+                new_frame.status_bar.config(text=f"Image {new_frame.status_number} of {len(new_frame.photos_list)}")
+                new_frame.grid(column=0, row=0, columnspan=5)
+                tab.add(new_frame, text=album)
+                tab.grid(column=0, row=0)
+    else:
+        default_frame = AlbumFrame(root, album_name="defualt", tab_note=tab)
+        default_frame.grid(column=0, row=0, columnspan=5)
+        tab.add(default_frame, text="default")
+        tab.grid(column=0, row=0)
+
+
+load_album()
 
 root.mainloop()
