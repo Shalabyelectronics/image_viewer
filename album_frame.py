@@ -1,9 +1,6 @@
 # Today goal is to build an simple fram class that can be nested to the root window and add tab to it
-from add_photos_window import AddPhoto
-from tkinter import *
-from tkinter import ttk
-import os
-import json
+from build_album import *
+
 
 FONT = "Coiny"
 BACKGROUND_COLOR = "#20574f"
@@ -113,24 +110,10 @@ class AlbumFrame(Frame):
             self.canvas.itemconfig(self.view_image, image=self.photos_list[self.index_count])
             self.status_bar.config(text=f"Image {self.status_number} of {len(self.photos_list)}")
 
-    # ----Call top level add photos window from add photo button
-    # def open_add_window(self):
-    #     AddPhoto()
 
 
-root = Tk()
-root.geometry("+800+200")
-tab = ttk.Notebook()
-frame_1 = AlbumFrame(root)
-frame_2 = AlbumFrame(root)
-frame_2.config(bg="red")
-frame_1.grid(column=0, row=0, columnspan=5)
-frame_2.grid(column=0, row=0, columnspan=5)
-tab.add(frame_1, text="frame one")
-# test = AddPhoto()
-tab.add(frame_2, text="frame 2")
-tab.grid(column=0, row=0)
-root.mainloop()
+
+
 # print(os.path.getsize("data.json"))
 # with open("data.json", "r") as data:
 #     data = json.load(data)
