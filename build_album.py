@@ -125,9 +125,14 @@ class AddPhoto(Toplevel):
             self.geometry("+200+200")
             self.photo_path = list(filedialog.askopenfilenames(initialdir=self.current_dir, title="Select an image",
                                                                filetypes=(
-                                                                   ("png files", "*.png"), ("all files", "*.*"))))
-            os.mkdir(f"img/albums/{self.album_name_e.get()}")
-            self.new_album_folder = f"img/albums/{self.album_name_e.get()}"
+                                                               ("png files", "*.png"), ("all files", "*.*"))))
+            try:
+                os.mkdir(f"img/albums/{self.album_name_e.get()}")
+            except FileExistsError:
+                self.new_album_folder = f"img/albums/{self.album_name_e.get()}"
+
+            else:
+                self.new_album_folder = f"img/albums/{self.album_name_e.get()}"
         else:
             self.wm_attributes('-topmost', 0)
             info = messagebox.showinfo(title="Required", message="Please, do not leave album name empty.")
@@ -135,9 +140,9 @@ class AddPhoto(Toplevel):
                 self.wm_attributes('-topmost', 1)
 
     def save(self):
-
         if self.new_album_folder is not None:
             self.save_update(self.new_album_folder)
+            self.create_new_frame()
         elif self.update_album is not None:
             self.save_update(self.update_album)
         else:
@@ -164,15 +169,16 @@ class AddPhoto(Toplevel):
                 update_data_file(data)
             else:
                 create_data_file(data)
-
-            new_frame = AlbumFrame(self.root_window, album_name=album, tab_note=self.tab)
-            new_frame.photos_list = [PhotoImage(file=image) for image in self.photos_paths_list]
-            new_frame.canvas.itemconfig(new_frame.view_image, image=new_frame.photos_list[0])
-            new_frame.status_bar.config(text=f"Image {new_frame.status_number} of {len(new_frame.photos_list)}")
-            new_frame.grid(column=0, row=0, columnspan=5)
-            self.tab.add(new_frame, text=album)
-            self.tab.grid(column=0, row=0)
             self.destroy()
+
+    def create_new_frame(self):
+        new_frame = AlbumFrame(self.root_window, album_name=self.album_name, tab_note=self.tab)
+        new_frame.photos_list = [PhotoImage(file=image) for image in self.photos_paths_list]
+        new_frame.canvas.itemconfig(new_frame.view_image, image=new_frame.photos_list[0])
+        new_frame.status_bar.config(text=f"Image {new_frame.status_number} of {len(new_frame.photos_list)}")
+        new_frame.grid(column=0, row=0, columnspan=5)
+        self.tab.add(new_frame, text=self.album_name)
+        self.tab.grid(column=0, row=0)
 
 
 class AlbumFrame(Frame):
@@ -284,32 +290,3 @@ class AlbumFrame(Frame):
         # -----Test
 
 
-root = Tk()
-root.geometry("+800+200")
-root.iconbitmap(default="img/app_img/my.ico")
-root.title("Photo Album App")
-tab = ttk.Notebook()
-
-
-def load_album():
-    if os.path.isfile("data.json"):
-        with open("data.json", "r") as data:
-            data = json.load(data)
-            for album in data:
-                new_frame = AlbumFrame(root, album, tab_note=tab)
-                new_frame.photos_list = [PhotoImage(file=image) for image in data[album]["photos list"]]
-                new_frame.canvas.itemconfig(new_frame.view_image, image=new_frame.photos_list[0])
-                new_frame.status_bar.config(text=f"Image {new_frame.status_number} of {len(new_frame.photos_list)}")
-                new_frame.grid(column=0, row=0, columnspan=5)
-                tab.add(new_frame, text=album)
-                tab.grid(column=0, row=0)
-    else:
-        default_frame = AlbumFrame(root, album_name="defualt", tab_note=tab)
-        default_frame.grid(column=0, row=0, columnspan=5)
-        tab.add(default_frame, text="default")
-        tab.grid(column=0, row=0)
-
-
-load_album()
-
-root.mainloop()
